@@ -48,8 +48,8 @@ loss_fn = torch.nn.CrossEntropyLoss()
 num_epochs = 5
 
 for epoch in range(num_epochs):
-    
-model.train()
+
+    model.train()
 
 optimizer.zero_grad()
 outputs = model(
@@ -85,7 +85,7 @@ attention_mask = encoded_input['attention_mask']
 
 # Make predictions
 with torch.no_grad():
-outputs = model(
+    outputs = model(
     input_ids = input_ids,
     attention_mask = attention_mask,
 )
