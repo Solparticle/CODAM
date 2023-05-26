@@ -13,7 +13,85 @@ questions = df['question'].tolist()
 answers = df['answer'].tolist()
 
 # Preprocess the questions and answers
-# Your preprocessing code goes here
+import json
+
+import re
+
+from nltk.corpus import stopwords
+
+from nltk.tokenize import word_tokenize
+
+from nltk.stem import WordNetLemmatizer
+
+# Load the dataset
+
+with open('dev-v1.1.json', 'r') as f:
+
+    dataset = json.load(f)
+
+# Preprocess the dataset
+
+preprocessed_questions = []
+
+preprocessed_answers = []
+
+lemmatizer = WordNetLemmatizer()
+
+stopwords = set(stopwords.words('english'))
+
+for item in dataset['data']:
+
+    for paragraph in item['paragraphs']:
+
+        for qas in paragraph['qas']:
+
+            # Preprocess question
+
+            question = qas['question'].lower()
+
+            question = re.sub(r'\W', ' ', question)  # Remove non-alphanumeric characters
+
+            question = re.sub(r'\s+', ' ', question)  # Remove extra whitespaces
+
+            question_tokens = word_tokenize(question)
+
+            question_tokens = [lemmatizer.lemmatize(token) for token in question_tokens if token not in stopwords]
+
+            preprocessed_question = ' '.join(question_tokens)
+
+            
+
+            # Preprocess answer
+
+            answer = qas['answers'][0]['text'].lower()
+
+            answer = re.sub(r'\W', ' ', answer)  # Remove non-alphanumeric characters
+
+            answer = re.sub(r'\s+', ' ', answer)  # Remove extra whitespaces
+
+            answer_tokens = word_tokenize(answer)
+
+            answer_tokens = [lemmatizer.lemmatize(token) for token in answer_tokens if token not in stopwords]
+
+            preprocessed_answer = ' '.join(answer_tokens)
+
+            
+
+            # Append preprocessed question and answer to the respective lists
+
+            preprocessed_questions.append(preprocessed_question)
+
+            preprocessed_answers.append(preprocessed_answer)
+
+# Print preprocessed questions and answers
+
+for i in range(len(preprocessed_questions)):
+
+    print("Question:", preprocessed_questions[i])
+
+    print("Answer:", preprocessed_answers[i])
+
+    print()
 
 # Tokenize the questions and answers
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
